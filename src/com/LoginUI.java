@@ -28,7 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class LoginUI extends Application implements EventHandler<ActionEvent>
+public class LoginUI extends Application
 {
 	public Statement stmt;
 	TextField usernameTF = new TextField();
@@ -151,43 +151,6 @@ public class LoginUI extends Application implements EventHandler<ActionEvent>
 				e.printStackTrace();
 			}
 		}
-
-		@Override
-		public void handle(ActionEvent event)
-		{
-			String getUsernameAndPassword = "select userName, password from users";
-
-			try
-			{
-				ResultSet rSet = stmt.executeQuery(getUsernameAndPassword);
-				String username = "";
-				String password = "";
-
-				if(rSet.next()) {
-					username = rSet.getString(1);
-					password = rSet.getString(2);
-				}
-
-				if(usernameTF.getText().equalsIgnoreCase(username) && passwordTF.getText().equalsIgnoreCase(password)) {
-					System.out.println("Login successful!");
-					loginSuccessfulOrNot = "Login successful!";
-					createSecondaryScene();
-					this.primaryStage.setScene(sceneSecondary);;
-
-				}
-				else {
-					System.out.println("Login unsuccessful!");
-					loginSuccessfulOrNot = "Login unsuccessful!";
-					createSecondaryScene();
-					this.primaryStage.setScene(sceneSecondary);;
-
-				}
-			} catch (SQLException e1)
-			{
-				e1.printStackTrace();
-			}
-		}		
-
 
 		public static void main(String[] args) {
 			Application.launch(args);
