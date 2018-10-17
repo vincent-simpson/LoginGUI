@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -30,7 +31,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class LoginUI extends Application 
+public class LoginUI extends Application implements EventHandler<ActionEvent>
 {
 	public Statement stmt;
 	TextField usernameTF = new TextField();
@@ -50,9 +51,7 @@ public class LoginUI extends Application
 	@Override
 	public void start(Stage primaryStage) {
 		initializeDB();
-		GridPane gPane = new GridPane();
-		OKHandlerClass handler1 = new OKHandlerClass();
-		
+		GridPane gPane = new GridPane();	
 		
 		gPane.setAlignment(Pos.CENTER);
 		gPane.setPadding(new Insets(11.5, 12.5, 13.5, 14.5));
@@ -72,7 +71,7 @@ public class LoginUI extends Application
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
-		btLogin.setOnAction(handler1);
+		btLogin.setOnAction(this);
 		
 	}
 	
@@ -93,36 +92,35 @@ public class LoginUI extends Application
 		Application.launch(args);
 	}
 
-	
-	class OKHandlerClass implements EventHandler<javafx.event.ActionEvent>{
-		@Override
-		public void handle(javafx.event.ActionEvent e) {
-			String getUsernameAndPassword = "select userName, password from users";
+	@Override
+	public void handle(ActionEvent event)
+	{
+		String getUsernameAndPassword = "select userName, password from users";
+		
+		try
+		{
+			ResultSet rSet = stmt.executeQuery(getUsernameAndPassword);
+			String username = "";
+			String password = "";
 			
-			try
-			{
-				ResultSet rSet = stmt.executeQuery(getUsernameAndPassword);
-				String username = "";
-				String password = "";
-				
-				if(rSet.next()) {
-					username = rSet.getString(1);
-					password = rSet.getString(2);
-				}
-				
-				if(usernameTF.getText().equalsIgnoreCase(username) && passwordTF.getText().equalsIgnoreCase(password)) {
-					System.out.println("Login successful!");
-				}
-				else {
-					System.out.println("Login unsuccessful!");
-				}
-			} catch (SQLException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if(rSet.next()) {
+				username = rSet.getString(1);
+				password = rSet.getString(2);
 			}
+			
+			if(usernameTF.getText().equalsIgnoreCase(username) && passwordTF.getText().equalsIgnoreCase(password)) {
+				System.out.println("Login successful!");
+			}
+			else {
+				System.out.println("Login unsuccessful!");
+			}
+		} catch (SQLException e1)
+		{
+			e1.printStackTrace();
 		}
-	}
+	}		
+	
+
 	
 	
 	
